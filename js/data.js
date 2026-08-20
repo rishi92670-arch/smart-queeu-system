@@ -28,9 +28,8 @@ function triggerLocalUpdate(action, payload) {
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "dummy-key-not-needed-for-public-rtdb",
-  databaseURL: "https://smart-1f083-default-rtdb.firebaseio.com",
-  projectId: "smart-1f083"
+    databaseURL: "https://smart-1f083-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    projectId: "smart-1f083",
 };
 
 if (!firebase.apps.length) {
