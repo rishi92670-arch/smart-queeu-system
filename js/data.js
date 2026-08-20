@@ -1,7 +1,7 @@
 // js/data.js
 
 // Theme Initialization
-(function() {
+(function () {
     const savedTheme = localStorage.getItem('qsync_theme') || 'light';
     if (savedTheme === 'dark') {
         document.documentElement.classList.add('theme-dark');
@@ -43,7 +43,7 @@ class QDatabase {
         this.isReady = false;
         this.readyCallbacks = [];
         this.dbRef = fdb.ref('/');
-        
+
         // Listen to Firebase Realtime Database
         this.dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
@@ -124,7 +124,7 @@ class QDatabase {
     getTokens() {
         return this._read().tokens || [];
     }
-    
+
     getTokensByStatus(status) {
         return this.getTokens().filter(t => t.status === status);
     }
@@ -132,7 +132,7 @@ class QDatabase {
     getToken(tokenId) {
         return this.getTokens().find(t => t.id === tokenId);
     }
-    
+
     getTokenByTrackingId(trackingId) {
         return this.getTokens().find(t => t.trackingId === trackingId.toUpperCase());
     }
@@ -149,21 +149,21 @@ class QDatabase {
     generateToken(serviceId) {
         const db = this._read();
         const service = db.services.find(s => s.id === serviceId);
-        
+
         const serviceTokens = (db.tokens || []).filter(t => t.serviceId === serviceId);
         let maxNum = 100;
-        
+
         if (serviceTokens.length > 0) {
             maxNum = Math.max(...serviceTokens.map(t => {
                 const parts = t.tokenNumber.split('-');
                 return parseInt(parts[1]) || 100;
             }));
         }
-        
+
         const nextNum = maxNum + 1;
         const tokenNumber = `${service.prefix}-${nextNum}`;
         const trackingId = this._generateTrackingId();
-        
+
         const newToken = {
             id: 'TKN_' + Date.now(),
             serviceId,
@@ -176,38 +176,38 @@ class QDatabase {
             servedByCounterId: null
         };
 
-        if(!db.tokens) db.tokens = [];
+        if (!db.tokens) db.tokens = [];
         db.tokens.push(newToken);
         this._write(db);
-        
+
         // Let Firebase onValue handle the UI notification
         return newToken;
     }
 
     updateTokenStatus(tokenId, status, counterId = null) {
         const db = this._read();
-        if(!db.tokens) return null;
+        if (!db.tokens) return null;
 
         const idx = db.tokens.findIndex(t => t.id === tokenId);
-        
+
         if (idx !== -1) {
             const token = db.tokens[idx];
             token.status = status;
-            
+
             if (status === 'SERVING') {
                 token.servedAt = new Date().toISOString();
                 token.servedByCounterId = counterId;
-                
+
                 const cIdx = db.counters.findIndex(c => c.id === counterId);
-                if(cIdx !== -1) {
+                if (cIdx !== -1) {
                     db.counters[cIdx].status = 'SERVING';
                     db.counters[cIdx].currentServingTokenId = tokenId;
                 }
             } else if (status === 'COMPLETED' || status === 'SKIPPED') {
                 token.completedAt = new Date().toISOString();
-                
+
                 const cIdx = db.counters.findIndex(c => c.id === token.servedByCounterId || c.id === counterId);
-                if(cIdx !== -1) {
+                if (cIdx !== -1) {
                     db.counters[cIdx].status = 'IDLE';
                     db.counters[cIdx].currentServingTokenId = null;
                 }
@@ -225,8 +225,8 @@ class QDatabase {
         if (!token) return null;
 
         const allWaitingTokens = this.getTokensByStatus('WAITING')
-                                     .filter(t => t.serviceId === token.serviceId)
-                                     .sort((a, b) => new Date(a.issuedAt) - new Date(b.issuedAt));
+            .filter(t => t.serviceId === token.serviceId)
+            .sort((a, b) => new Date(a.issuedAt) - new Date(b.issuedAt));
 
         let peopleAhead = 0;
         let position = 0;
@@ -243,7 +243,7 @@ class QDatabase {
         const estWaitTime = peopleAhead * (service.avgServiceTime || 5);
 
         const servingToken = this.getTokensByStatus('SERVING')
-                                 .find(t => t.serviceId === token.serviceId);
+            .find(t => t.serviceId === token.serviceId);
 
         return {
             peopleAhead,
