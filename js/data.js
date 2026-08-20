@@ -211,6 +211,11 @@ class QDatabase {
                     db.counters[cIdx].status = 'IDLE';
                     db.counters[cIdx].currentServingTokenId = null;
                 }
+                
+                // Delete the token data completely from the database
+                db.tokens.splice(idx, 1);
+                this._write(db);
+                return token;
             }
 
             db.tokens[idx] = token;

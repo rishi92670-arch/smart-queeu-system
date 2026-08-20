@@ -61,7 +61,18 @@ function handleTrack() {
 
 function updateTrackingData(tokenId) {
     const token = db.getToken(tokenId);
-    if (!token) return;
+    const banner = document.getElementById('trackStatusBanner');
+
+    if (!token) {
+        // Token was deleted upon completion
+        banner.textContent = 'SERVICE COMPLETED / REMOVED';
+        banner.className = 'status-banner';
+        
+        document.getElementById('trackAhead').textContent = '--';
+        document.getElementById('trackWait').textContent = '--';
+        document.getElementById('trackCurrentServing').textContent = 'Thank you for visiting.';
+        return;
+    }
 
     const stats = db.getQueueStats(tokenId);
 
