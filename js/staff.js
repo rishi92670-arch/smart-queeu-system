@@ -17,22 +17,24 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const allCounters = db.getCounters();
-    const counter = allCounters.find(c => c.id === currentCounterId);
-    
-    if (!counter) {
-        alert("Counter not found.");
-        window.location.href = 'dashboard.html';
-        return;
-    }
-    
-    const config = db.getConfig();
-    document.title = `${counter.name} | ${config.name}`;
-    document.getElementById('counterName').textContent = `${counter.name} - ${config.name}`;
+    db.onReady(() => {
+        const allCounters = db.getCounters();
+        const counter = allCounters.find(c => c.id === currentCounterId);
+        
+        if (!counter) {
+            alert("Counter not found.");
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        
+        const config = db.getConfig();
+        document.title = `${counter.name} | ${config.name}`;
+        document.getElementById('counterName').textContent = `${counter.name} - ${config.name}`;
 
-    lucide.createIcons();
-    
-    loadTerminalData();
+        lucide.createIcons();
+        
+        loadTerminalData();
+    });
 
     // Event Listeners
     document.getElementById('btnCallNext').onclick = callNextToken;

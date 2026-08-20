@@ -120,15 +120,19 @@
         </main>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="js/data.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            const config = db.getConfig();
-            if (config) {
-                document.getElementById('orgNameNav').textContent = config.name;
-                document.getElementById('orgNameTitle').textContent = config.name;
-            }
+            db.onReady(() => {
+                const config = db.getConfig();
+                if (config) {
+                    document.getElementById('orgNameNav').textContent = config.name;
+                    document.getElementById('orgNameTitle').textContent = config.name;
+                }
+            });
         });
     </script>
 </body>

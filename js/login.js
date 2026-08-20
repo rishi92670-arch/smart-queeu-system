@@ -3,10 +3,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
     
-    const config = db.getConfig();
-    if (config) {
-        document.getElementById('orgName').textContent = config.name;
-    }
+    db.onReady(() => {
+        const config = db.getConfig();
+        if (config) {
+            document.title = `Login | ${config.name}`;
+            document.getElementById('orgNameNav').textContent = config.name;
+        }
+        lucide.createIcons();
+    });
 
     document.getElementById('btnLogin').onclick = handleLogin;
     

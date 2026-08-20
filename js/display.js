@@ -1,28 +1,30 @@
 // js/display.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    const config = db.getConfig();
-    if (!config) return;
+    db.onReady(() => {
+        const config = db.getConfig();
+        if (!config) return;
 
-    document.title = `${config.name} Display`;
-    document.getElementById('orgName').textContent = config.name;
-    document.getElementById('orgLogo').textContent = config.name.charAt(0);
-    document.getElementById('orgLogo').style.background = config.themeColor || 'var(--color-brand-primary)';
+        document.title = `${config.name} Display`;
+        document.getElementById('orgName').textContent = config.name;
+        document.getElementById('orgLogo').textContent = config.name.charAt(0);
+        document.getElementById('orgLogo').style.background = config.themeColor || 'var(--color-brand-primary)';
 
-    // Generate QR Code (handles Vercel clean URLs & subdirectories)
-    const path = window.location.pathname;
-    const basePath = path.substring(0, path.lastIndexOf('/'));
-    const url = window.location.origin + basePath + '/user.html';
-    new QRCode(document.getElementById("qrcodeDisplay"), {
-        text: url,
-        width: 140,
-        height: 140,
-        colorDark : config.themeColor || "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
+        // Generate QR Code (handles Vercel clean URLs & subdirectories)
+        const path = window.location.pathname;
+        const basePath = path.substring(0, path.lastIndexOf('/'));
+        const url = window.location.origin + basePath + '/user.html';
+        new QRCode(document.getElementById("qrcodeDisplay"), {
+            text: url,
+            width: 140,
+            height: 140,
+            colorDark : config.themeColor || "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+
+        loadDisplayData();
     });
-
-    loadDisplayData();
 
     // Listen for updates
     qChannel.onmessage = (event) => {

@@ -6,21 +6,23 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const config = db.getConfig();
-    if (!config) {
-        alert("Database error: config missing.");
-        return;
-    }
+    db.onReady(() => {
+        const config = db.getConfig();
+        if (!config) {
+            alert("Database error: config missing.");
+            return;
+        }
 
-    // Initialize UI
-    document.title = `${config.name} Dashboard | Q-Sync`;
-    document.getElementById('orgNameHeader').textContent = config.name;
-    document.getElementById('orgNameHeader').style.color = config.themeColor || 'var(--color-brand-primary)';
+        // Initialize UI
+        document.title = `${config.name} Dashboard | Q-Sync`;
+        document.getElementById('orgNameHeader').textContent = config.name;
+        document.getElementById('orgNameHeader').style.color = config.themeColor || 'var(--color-brand-primary)';
 
-    loadDashboardData();
-    generateQR(config);
+        loadDashboardData();
+        generateQR(config);
 
-    lucide.createIcons();
+        lucide.createIcons();
+    });
 
     // Listen for real-time updates
     qChannel.onmessage = (event) => {

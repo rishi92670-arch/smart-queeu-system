@@ -21,37 +21,71 @@ function toggleTheme() {
     }
 }
 
-// Broadcast Channel for cross-tab synchronization
+// Broadcast Channel for local cross-tab synchronization (fallback)
 const qChannel = new BroadcastChannel('qsync_events');
 
-const STORAGE_KEY = 'qsync_db_v2'; // New key for single-tenant
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "dummy-key-not-needed-for-public-rtdb",
+  databaseURL: "https://smart-1f083-default-rtdb.firebaseio.com",
+  projectId: "smart-1f083"
+};
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const fdb = firebase.database();
 
 class QDatabase {
     constructor() {
-        this.init();
+        this.localDb = null;
+        this.isReady = false;
+        this.readyCallbacks = [];
+        this.dbRef = fdb.ref('/');
+        
+        // Listen to Firebase Realtime Database
+        this.dbRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                // Handle backwards compatibility (migrations)
+                if (!data.users) {
+                    data.users = [{ username: "admin", password: "password123", role: "ADMIN" }];
+                    this.dbRef.update({ users: data.users });
+                }
+                if (!data.tokens) {
+                    data.tokens = [];
+                }
+
+                this.localDb = data;
+
+                if (!this.isReady) {
+                    this.isReady = true;
+                    this.readyCallbacks.forEach(cb => cb());
+                    this.readyCallbacks = [];
+                } else {
+                    // Notify UI that data changed
+                    this._notify('FIREBASE_UPDATE', data);
+                }
+            } else {
+                // If DB is completely empty, seed it
+                this.seedData();
+            }
+        });
     }
 
-    init() {
-        if (!localStorage.getItem(STORAGE_KEY)) {
-            this.seedData();
-        } else {
-            // Ensure backwards compatibility if DB exists but missing users array
-            const db = this._read();
-            if (!db.users) {
-                db.users = [
-                    { username: "admin", password: "password123", role: "ADMIN" }
-                ];
-                this._write(db);
-            }
-        }
+    onReady(cb) {
+        if (this.isReady) cb();
+        else this.readyCallbacks.push(cb);
     }
 
     _read() {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY));
+        // Fallback to empty structure if not loaded
+        return this.localDb || { config: {}, services: [], counters: [], users: [], tokens: [] };
     }
 
     _write(data) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        // Overwrite the database
+        this.dbRef.set(data);
     }
 
     _notify(action, payload) {
@@ -87,7 +121,7 @@ class QDatabase {
 
     // --- Tokens / Queue ---
     getTokens() {
-        return this._read().tokens;
+        return this._read().tokens || [];
     }
     
     getTokensByStatus(status) {
@@ -95,16 +129,15 @@ class QDatabase {
     }
 
     getToken(tokenId) {
-        return this._read().tokens.find(t => t.id === tokenId);
+        return this.getTokens().find(t => t.id === tokenId);
     }
     
     getTokenByTrackingId(trackingId) {
-        // tracking IDs are stored uppercase
-        return this._read().tokens.find(t => t.trackingId === trackingId.toUpperCase());
+        return this.getTokens().find(t => t.trackingId === trackingId.toUpperCase());
     }
 
     _generateTrackingId() {
-        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluded confusing chars like 1, I, O, 0
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         let result = '';
         for (let i = 0; i < 6; i++) {
             result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -116,7 +149,7 @@ class QDatabase {
         const db = this._read();
         const service = db.services.find(s => s.id === serviceId);
         
-        const serviceTokens = db.tokens.filter(t => t.serviceId === serviceId);
+        const serviceTokens = (db.tokens || []).filter(t => t.serviceId === serviceId);
         let maxNum = 100;
         
         if (serviceTokens.length > 0) {
@@ -142,15 +175,18 @@ class QDatabase {
             servedByCounterId: null
         };
 
+        if(!db.tokens) db.tokens = [];
         db.tokens.push(newToken);
         this._write(db);
-        this._notify('NEW_TOKEN', newToken);
         
+        // Let Firebase onValue handle the UI notification
         return newToken;
     }
 
     updateTokenStatus(tokenId, status, counterId = null) {
         const db = this._read();
+        if(!db.tokens) return null;
+
         const idx = db.tokens.findIndex(t => t.id === tokenId);
         
         if (idx !== -1) {
@@ -178,7 +214,6 @@ class QDatabase {
 
             db.tokens[idx] = token;
             this._write(db);
-            this._notify('TOKEN_UPDATED', token);
             return token;
         }
         return null;
@@ -240,7 +275,7 @@ class QDatabase {
             ],
             tokens: []
         };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+        this.dbRef.set(db);
     }
 }
 

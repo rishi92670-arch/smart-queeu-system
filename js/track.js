@@ -3,12 +3,23 @@
 let currentTokenId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const config = db.getConfig();
-    if (config) {
-        document.getElementById('orgName').textContent = config.name;
-    }
+    db.onReady(() => {
+        const config = db.getConfig();
+        if (config) {
+            document.title = `Track Queue | ${config.name}`;
+            document.getElementById('orgNameHeader').textContent = config.name;
+        }
 
-    lucide.createIcons();
+        lucide.createIcons();
+        
+        // Auto-check if URL has param
+        const urlParams = new URLSearchParams(window.location.search);
+        const trackingId = urlParams.get('id');
+        if (trackingId) {
+            document.getElementById('trackingIdInput').value = trackingId;
+            handleTrack();
+        }
+    });
     
     document.getElementById('btnTrack').onclick = handleTrack;
     
