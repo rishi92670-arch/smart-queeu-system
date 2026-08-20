@@ -130,10 +130,24 @@
             50% { transform: scale(1.02); }
             100% { transform: scale(1); }
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body { overflow: auto; }
+            .display-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+                padding: 1rem;
+            }
+            .serving-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
+        <button class="btn btn-secondary" onclick="toggleTheme()" title="Toggle Dark Mode" style="position: absolute; top: 1rem; right: 1rem; padding: 0.5rem; border-radius: 50%; border: none; background: transparent;"><i data-lucide="moon" style="width:20px; height:20px;"></i></button>
         <div class="display-layout">
             <div class="main-display">
                 <div class="header-brand">

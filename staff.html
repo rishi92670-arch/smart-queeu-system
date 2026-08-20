@@ -113,6 +113,21 @@
             color: #374151;
         }
         .status-badge.serving { background: var(--color-brand-primary); color: white; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .staff-layout {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            .controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            .controls .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -122,7 +137,8 @@
                 <i data-lucide="monitor" class="brand-icon"></i>
                 <span class="brand-text" id="counterName">Terminal Loading...</span>
             </div>
-            <div class="nav-links">
+            <div class="nav-links" style="display:flex; align-items:center; gap: 1rem;">
+                <button class="btn btn-secondary" onclick="toggleTheme()" title="Toggle Dark Mode" style="padding: 0.5rem; border-radius: 50%; border: none; background: transparent;"><i data-lucide="moon" style="width:20px; height:20px;"></i></button>
                 <span id="counterStatus" class="status-badge idle">IDLE</span>
             </div>
         </nav>

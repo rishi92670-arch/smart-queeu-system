@@ -1,5 +1,26 @@
 // js/data.js
 
+// Theme Initialization
+(function() {
+    const savedTheme = localStorage.getItem('qsync_theme') || 'light';
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('theme-dark');
+    }
+})();
+
+function toggleTheme() {
+    const isDark = document.body.classList.contains('theme-dark') || document.documentElement.classList.contains('theme-dark');
+    if (isDark) {
+        document.body.classList.remove('theme-dark');
+        document.documentElement.classList.remove('theme-dark');
+        localStorage.setItem('qsync_theme', 'light');
+    } else {
+        document.body.classList.add('theme-dark');
+        document.documentElement.classList.add('theme-dark');
+        localStorage.setItem('qsync_theme', 'dark');
+    }
+}
+
 // Broadcast Channel for cross-tab synchronization
 const qChannel = new BroadcastChannel('qsync_events');
 

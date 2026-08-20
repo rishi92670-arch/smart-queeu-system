@@ -20,6 +20,9 @@
     --color-danger: #ef4444;
     --color-info: #0ea5e9;
     
+    /* Layout */
+    --border-color: #e5e7eb;
+    
     /* Typography */
     --font-family: 'Inter', sans-serif;
     
@@ -35,6 +38,16 @@
     /* Flat Shadows */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+body.theme-dark {
+    --color-bg-primary: #111827;
+    --color-bg-secondary: #1f2937;
+    --color-text-primary: #f9fafb;
+    --color-text-secondary: #9ca3af;
+    --border-color: #374151;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
 }
 
 /* Base Reset */
@@ -56,7 +69,7 @@ body {
 /* Utility Classes */
 .card-panel {
     background: var(--color-bg-secondary);
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
 }
@@ -79,7 +92,7 @@ body {
     align-items: center;
     padding: 1rem 2rem;
     background: var(--color-bg-secondary);
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .nav-brand {
@@ -139,13 +152,13 @@ body {
 }
 
 .btn-secondary {
-    background: #f3f4f6;
+    background: var(--color-bg-primary);
     color: var(--color-text-primary);
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color);
 }
 
 .btn-secondary:hover {
-    background: #e5e7eb;
+    background: var(--border-color);
 }
 
 .btn-lg {
@@ -161,4 +174,13 @@ body {
     border-radius: var(--radius-full);
     font-size: 0.85rem;
     font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
 }
