@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         lucide.createIcons();
-        
+
         // Auto-check if URL has param
         const urlParams = new URLSearchParams(window.location.search);
         const trackingId = urlParams.get('id');
@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
             handleTrack();
         }
     });
-    
+
     document.getElementById('btnTrack').onclick = handleTrack;
-    
+
     document.getElementById('trackingIdInput').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             handleTrack();
@@ -40,11 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
 function handleTrack() {
     const input = document.getElementById('trackingIdInput').value.trim();
     const errorMsg = document.getElementById('errorMsg');
-    
-    if(!input) return;
+
+    if (!input) return;
 
     const token = db.getTokenByTrackingId(input);
-    
+
     if (token) {
         errorMsg.style.display = 'none';
         currentTokenId = token.id;
@@ -77,19 +77,19 @@ function updateTrackingData(tokenId) {
     const stats = db.getQueueStats(tokenId);
 
     document.getElementById('trackToken').textContent = token.tokenNumber;
-    
+
     const banner = document.getElementById('trackStatusBanner');
 
     if (token.status === 'WAITING') {
         banner.textContent = 'WAITING IN QUEUE';
         banner.className = 'status-banner';
-        
+
         document.getElementById('trackAhead').textContent = stats.peopleAhead;
         document.getElementById('trackWait').textContent = stats.estWaitTime;
         document.getElementById('trackCurrentServing').textContent = stats.currentTokenNumber;
-        
+
         // Highlight if next
-        if(stats.peopleAhead === 0) {
+        if (stats.peopleAhead === 0) {
             banner.textContent = 'YOU ARE NEXT';
             banner.style.background = 'var(--color-warning)';
             banner.style.color = '#fff';
@@ -98,11 +98,11 @@ function updateTrackingData(tokenId) {
     } else if (token.status === 'SERVING') {
         banner.textContent = 'YOUR TURN';
         banner.className = 'status-banner serving';
-        
+
         let counterName = 'Counter';
-        if(token.servedByCounterId) {
+        if (token.servedByCounterId) {
             const ctr = db._read().counters.find(c => c.id === token.servedByCounterId);
-            if(ctr) counterName = ctr.name;
+            if (ctr) counterName = ctr.name;
         }
 
         document.getElementById('trackAhead').textContent = '--';
@@ -112,14 +112,14 @@ function updateTrackingData(tokenId) {
     } else if (token.status === 'COMPLETED') {
         banner.textContent = 'SERVICE COMPLETED';
         banner.className = 'status-banner';
-        
+
         document.getElementById('trackAhead').textContent = '--';
         document.getElementById('trackWait').textContent = '--';
         document.getElementById('trackCurrentServing').textContent = 'Thank you for visiting.';
     } else if (token.status === 'SKIPPED') {
         banner.textContent = 'TOKEN SKIPPED';
         banner.className = 'status-banner skipped';
-        
+
         document.getElementById('trackAhead').textContent = '--';
         document.getElementById('trackWait').textContent = '--';
         document.getElementById('trackCurrentServing').textContent = 'Your token was skipped by staff.';
