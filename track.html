@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Status | Q-Sync</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/lucide@latest/icons" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .track-layout {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            min-height: 100vh;
+            justify-content: center;
+        }
+
+        .search-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 2px solid #d1d5db;
+            border-radius: var(--radius-md);
+            outline: none;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 600;
+        }
+        
+        .search-input:focus {
+            border-color: var(--color-brand-primary);
+        }
+
+        /* Tracking View */
+        .tracking-card {
+            text-align: center;
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+            display: none; /* hidden initially */
+        }
+
+        .status-banner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .status-banner.serving {
+            background: var(--color-success);
+            color: white;
+        }
+        
+        .status-banner.skipped {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        .token-display {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin: 2rem 0;
+            color: var(--color-text-primary);
+        }
+
+        .tracking-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 2rem;
+        }
+
+        .t-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .t-stat-val {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-brand-primary);
+        }
+
+        .error-msg {
+            color: var(--color-danger);
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <main class="track-layout">
+            
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <h2 id="orgName">Loading...</h2>
+                <p style="color: var(--color-text-secondary);">Live Queue Tracking</p>
+            </div>
+
+            <div class="card-panel" style="padding: 2rem;">
+                <div class="search-box">
+                    <label style="font-weight: 600; text-align: center;">Enter your Tracking ID</label>
+                    <input type="text" id="trackingIdInput" class="search-input" placeholder="e.g. K9X4M" maxlength="6">
+                    <button class="btn btn-primary btn-lg" id="btnTrack" style="width: 100%;">Check Status</button>
+                    <div class="error-msg" id="errorMsg">Invalid Tracking ID</div>
+                </div>
+            </div>
+
+            <!-- Tracking Data Display -->
+            <div class="tracking-card card-panel" id="trackCard">
+                <div class="status-banner" id="trackStatusBanner">WAITING</div>
+                
+                <div style="color: var(--color-text-secondary); margin-top: 1rem; font-weight: 500;">YOUR TOKEN</div>
+                <div class="token-display" id="trackToken">--</div>
+                
+                <div class="tracking-stats">
+                    <div class="t-stat">
+                        <span style="font-size: 0.85rem; color: var(--color-text-secondary); font-weight: 600;">People Ahead</span>
+                        <span class="t-stat-val" id="trackAhead">--</span>
+                    </div>
+                    <div class="t-stat">
+                        <span style="font-size: 0.85rem; color: var(--color-text-secondary); font-weight: 600;">Est. Wait</span>
+                        <span class="t-stat-val">
+                            <span id="trackWait">--</span><span style="font-size: 1rem; color: var(--color-text-secondary)">m</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-panel" id="currentServingBox" style="padding: 1.5rem; text-align: center; display: none;">
+                <div style="font-size: 0.85rem; color: var(--color-text-secondary); font-weight:600; text-transform:uppercase;">Currently Serving</div>
+                <div style="font-weight: 700; font-size: 1.5rem; color: var(--color-brand-primary); margin-top: 0.5rem;" id="trackCurrentServing">--</div>
+            </div>
+                
+            <div style="text-align: center; margin-top: 1rem;">
+                <a href="user.html" style="font-size: 0.9rem; color: var(--color-text-secondary); text-decoration: underline;">Back to Kiosk</a>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/track.js"></script>
+</body>
+</html>

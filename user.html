@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Kiosk | Q-Sync</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/lucide@latest/icons" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .kiosk-layout {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            min-height: 100vh;
+            justify-content: center;
+        }
+
+        .org-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        /* Services View */
+        .services-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .service-card {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: transform var(--transition-fast);
+        }
+
+        .service-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--color-brand-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Success View */
+        .success-card {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .token-display {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin: 1.5rem 0;
+            color: var(--color-brand-primary);
+        }
+
+        .tracking-box {
+            background: #f9fafb;
+            border: 2px dashed #d1d5db;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin: 2rem 0;
+        }
+
+        .tracking-id {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--color-text-primary);
+            margin: 0.5rem 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <main class="kiosk-layout">
+            
+            <!-- VIEW 1: Select Service -->
+            <div id="viewSelectService" class="hidden">
+                <div class="org-header">
+                    <h2 id="orgName" class="brand-text-color">Loading...</h2>
+                    <p style="color: var(--color-text-secondary); margin-top: 0.5rem;">Please select a service to join the queue.</p>
+                </div>
+
+                <div class="services-list" id="servicesList">
+                    <!-- Populated via JS -->
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-secondary" onclick="window.location.href='track.html'">
+                        <i data-lucide="search"></i> Check Existing Token Status
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW 2: Token Generated Success -->
+            <div id="viewSuccess" class="hidden">
+                <div class="success-card card-panel">
+                    <div style="color: var(--color-success); margin-bottom: 1rem;">
+                        <i data-lucide="check-circle" style="width: 48px; height: 48px;"></i>
+                    </div>
+                    <h3 style="color: var(--color-text-secondary)">YOUR TOKEN</h3>
+                    <div class="token-display" id="successTokenNumber">--</div>
+                    
+                    <div class="tracking-box">
+                        <div style="font-size: 0.9rem; color: var(--color-text-secondary); font-weight: 500; text-transform: uppercase;">Your Secret Tracking ID</div>
+                        <div class="tracking-id" id="successTrackingId">------</div>
+                        <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 0.5rem;">Take a photo or write this down.</div>
+                    </div>
+
+                    <p style="color: var(--color-text-secondary); margin-bottom: 2rem; font-size: 0.95rem;">
+                        You can check your live queue status anytime by visiting our website and entering your Tracking ID.
+                    </p>
+
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <button class="btn btn-primary" onclick="window.location.href='track.html'">Track Status Now</button>
+                        <button class="btn btn-secondary" onclick="window.location.reload()">Done</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const config = db.getConfig();
+            if (!config) return;
+
+            document.getElementById('viewSelectService').classList.remove('hidden');
+            document.getElementById('orgName').textContent = config.name;
+            
+            const servicesList = document.getElementById('servicesList');
+            const services = db.getServices();
+
+            if (services.length === 0) {
+                servicesList.innerHTML = '<p style="text-align:center;">No services available.</p>';
+                return;
+            }
+
+            services.forEach(s => {
+                if(!s.isActive) return;
+                const card = document.createElement('div');
+                card.className = 'service-card card-panel';
+                card.onclick = () => generateUserToken(s.id);
+                card.innerHTML = `
+                    <div>
+                        <div style="font-weight: 600; font-size: 1.1rem;">${s.name}</div>
+                        <div style="font-size: 0.85rem; color: var(--color-text-secondary)">~${s.avgServiceTime} min wait time</div>
+                    </div>
+                    <i data-lucide="chevron-right" style="color: var(--color-text-secondary)"></i>
+                `;
+                servicesList.appendChild(card);
+            });
+            lucide.createIcons();
+        });
+
+        function generateUserToken(serviceId) {
+            const token = db.generateToken(serviceId);
+            if(token) {
+                document.getElementById('viewSelectService').classList.add('hidden');
+                document.getElementById('viewSuccess').classList.remove('hidden');
+                
+                document.getElementById('successTokenNumber').textContent = token.tokenNumber;
+                document.getElementById('successTrackingId').textContent = token.trackingId;
+            }
+        }
+    </script>
+</body>
+</html>

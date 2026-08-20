@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Board | Q-Sync</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/lucide@latest/icons" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            overflow: hidden;
+            background: #f4f7f6;
+        }
+
+        .display-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            height: 100vh;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .main-display {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--color-text-primary);
+        }
+
+        /* Now Serving Grid */
+        .serving-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            flex: 1;
+        }
+
+        .serving-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            transition: all 0.5s ease;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .serving-card.highlight {
+            background: #eff6ff;
+            border-color: var(--color-brand-primary);
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+        }
+
+        .counter-name {
+            font-size: 1.2rem;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .serving-token {
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 1;
+            color: var(--color-brand-primary);
+        }
+
+        /* Sidebar: Upcoming Tokens */
+        .upcoming-panel {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .upcoming-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            color: var(--color-text-primary);
+        }
+
+        .upcoming-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .upcoming-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius-md);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="display-layout">
+            <div class="main-display">
+                <div class="header-brand">
+                    <div id="orgLogo" style="width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size: 1.5rem;">A</div>
+                    <span id="orgName">Loading...</span>
+                </div>
+                
+                <h2 style="font-size: 1.8rem; color: var(--color-text-secondary); text-transform: uppercase;">Now Serving</h2>
+                
+                <div class="serving-grid" id="servingGrid">
+                    <!-- Serving cards populated via JS -->
+                </div>
+            </div>
+
+            <div class="upcoming-panel">
+                <div class="upcoming-header">
+                    Please Wait
+                </div>
+                <div class="upcoming-list" id="upcomingList">
+                    <!-- Upcoming tokens populated via JS -->
+                </div>
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e5e7eb; text-align: center;">
+                    <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem; color: var(--color-text-primary);">Scan to Join Queue</div>
+                    <div id="qrcodeDisplay" style="display: flex; justify-content: center;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/data.js"></script>
+    <script src="js/display.js"></script>
+</body>
+</html>

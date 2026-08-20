@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Terminal | Q-Sync</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/lucide@latest/icons" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .staff-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 100px);
+        }
+
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .current-token-card {
+            padding: 3rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            border-top: 4px solid var(--color-brand-primary);
+        }
+
+        .token-large {
+            font-size: 6rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--color-brand-primary);
+            margin: 1rem 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .controls .btn {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+        .btn-success:hover { background: #059669; }
+        
+        .btn-danger {
+            background: white;
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+        }
+        .btn-danger:hover { background: #fef2f2; }
+
+        .queue-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: white;
+        }
+        
+        .queue-list-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .queue-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius-md);
+        }
+
+        .queue-item .token-id {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .queue-item .wait-time {
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .status-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: #e5e7eb;
+            color: #374151;
+        }
+        .status-badge.serving { background: var(--color-brand-primary); color: white; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="navbar" style="margin-bottom: 0;">
+            <div class="nav-brand">
+                <i data-lucide="monitor" class="brand-icon"></i>
+                <span class="brand-text" id="counterName">Terminal Loading...</span>
+            </div>
+            <div class="nav-links">
+                <span id="counterStatus" class="status-badge idle">IDLE</span>
+            </div>
+        </nav>
+
+        <div class="staff-layout">
+            <!-- Left: Current Serving -->
+            <div class="main-panel">
+                <div class="current-token-card card-panel" id="currentServingCard">
+                    <h3 style="color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 2px;">Currently Serving</h3>
+                    <div class="token-large" id="currentTokenDisplay">--</div>
+                    
+                    <div class="controls">
+                        <button class="btn btn-primary" id="btnCallNext">
+                            <i data-lucide="play"></i> Call Next
+                        </button>
+                        <button class="btn btn-success" id="btnComplete" style="display:none;">
+                            <i data-lucide="check-circle"></i> Complete
+                        </button>
+                        <button class="btn btn-danger" id="btnSkip" style="display:none;">
+                            <i data-lucide="skip-forward"></i> Skip
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Queue List -->
+            <div class="queue-sidebar card-panel">
+                <div style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin: 0; font-size: 1.1rem;">Waiting Queue</h3>
+                    <span class="badge" id="queueCount">0</span>
+                </div>
+                <div class="queue-list-container" id="queueList">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/staff.js"></script>
+</body>
+</html>

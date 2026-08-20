@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-Sync | Smart Queue System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/lucide@latest/icons" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            flex: 1;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: var(--color-text-primary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+        }
+
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .action-card {
+            padding: 2.5rem 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-brand-primary);
+        }
+        
+        .icon-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: var(--color-brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i data-lucide="layers" class="brand-icon"></i>
+                <span class="brand-text" id="orgNameNav">Q-Sync</span>
+            </div>
+            <div class="nav-links">
+                <a href="login.html" class="nav-link">Staff Login</a>
+            </div>
+        </nav>
+
+        <main class="hero-section">
+            <div class="badge" style="margin-bottom: 1.5rem;">Digital Queue System</div>
+            <h1 class="hero-title">Welcome to <br><span class="brand-text-color" id="orgNameTitle">Our Facility</span></h1>
+            <p class="hero-subtitle">No more standing in line. Generate a token on your phone and track your wait time from anywhere.</p>
+            
+            <div class="action-cards">
+                <div class="action-card card-panel" onclick="window.location.href='user.html'">
+                    <div class="icon-circle">
+                        <i data-lucide="ticket" style="width: 32px; height: 32px;"></i>
+                    </div>
+                    <h3>Get a Token</h3>
+                    <p style="color: var(--color-text-secondary); font-size: 0.9rem;">Join the queue and get your digital token & tracking ID.</p>
+                </div>
+                
+                <div class="action-card card-panel" onclick="window.location.href='track.html'">
+                    <div class="icon-circle" style="background: #f0fdf4; color: var(--color-success);">
+                        <i data-lucide="search" style="width: 32px; height: 32px;"></i>
+                    </div>
+                    <h3>Track Status</h3>
+                    <p style="color: var(--color-text-secondary); font-size: 0.9rem;">Already have a Tracking ID? Check your live queue status.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            const config = db.getConfig();
+            if (config) {
+                document.getElementById('orgNameNav').textContent = config.name;
+                document.getElementById('orgNameTitle').textContent = config.name;
+            }
+        });
+    </script>
+</body>
+</html>
