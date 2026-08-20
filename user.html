@@ -139,35 +139,37 @@
     <script src="js/data.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const config = db.getConfig();
-            if (!config) return;
+            db.onReady(() => {
+                const config = db.getConfig();
+                if (!config) return;
 
-            document.getElementById('viewSelectService').classList.remove('hidden');
-            document.getElementById('orgName').textContent = config.name;
-            
-            const servicesList = document.getElementById('servicesList');
-            const services = db.getServices();
+                document.getElementById('viewSelectService').classList.remove('hidden');
+                document.getElementById('orgName').textContent = config.name;
+                
+                const servicesList = document.getElementById('servicesList');
+                const services = db.getServices();
 
-            if (services.length === 0) {
-                servicesList.innerHTML = '<p style="text-align:center;">No services available.</p>';
-                return;
-            }
+                if (services.length === 0) {
+                    servicesList.innerHTML = '<p style="text-align:center;">No services available.</p>';
+                    return;
+                }
 
-            services.forEach(s => {
-                if(!s.isActive) return;
-                const card = document.createElement('div');
-                card.className = 'service-card card-panel';
-                card.onclick = () => generateUserToken(s.id);
-                card.innerHTML = `
-                    <div>
-                        <div style="font-weight: 600; font-size: 1.1rem;">${s.name}</div>
-                        <div style="font-size: 0.85rem; color: var(--color-text-secondary)">~${s.avgServiceTime} min wait time</div>
-                    </div>
-                    <i data-lucide="chevron-right" style="color: var(--color-text-secondary)"></i>
-                `;
-                servicesList.appendChild(card);
+                services.forEach(s => {
+                    if(!s.isActive) return;
+                    const card = document.createElement('div');
+                    card.className = 'service-card card-panel';
+                    card.onclick = () => generateUserToken(s.id);
+                    card.innerHTML = `
+                        <div>
+                            <div style="font-weight: 600; font-size: 1.1rem;">${s.name}</div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-secondary)">~${s.avgServiceTime} min wait time</div>
+                        </div>
+                        <i data-lucide="chevron-right" style="color: var(--color-text-secondary)"></i>
+                    `;
+                    servicesList.appendChild(card);
+                });
+                lucide.createIcons();
             });
-            lucide.createIcons();
         });
 
         function generateUserToken(serviceId) {
