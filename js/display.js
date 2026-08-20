@@ -27,18 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Listen for updates
-    qChannel.onmessage = (event) => {
-        if (event.data && event.data.payload) {
-            
-            // If a token was called (SERVING), highlight the counter
-            if (event.data.action === 'TOKEN_UPDATED' && event.data.payload.status === 'SERVING') {
-                const counterId = event.data.payload.servedByCounterId;
-                highlightCounter(counterId);
-            }
-            
+    window.addEventListener('qsync_update', (event) => {
+        const { action, payload } = event.detail;
+        if (action === 'FIREBASE_UPDATE') {
             loadDisplayData();
         }
-    };
+    });
 });
 
 function loadDisplayData() {

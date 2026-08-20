@@ -41,12 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnComplete').onclick = () => completeCurrentToken('COMPLETED');
     document.getElementById('btnSkip').onclick = () => completeCurrentToken('SKIPPED');
 
-    // Real-time updates
-    qChannel.onmessage = (event) => {
-        if (event.data && event.data.payload) {
+    // Listen for real-time updates
+    window.addEventListener('qsync_update', (event) => {
+        const { action, payload } = event.detail;
+        if (action === 'FIREBASE_UPDATE') {
             loadTerminalData();
         }
-    };
+    });
 });
 
 function loadTerminalData() {

@@ -25,11 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Listen for real-time updates
-    qChannel.onmessage = (event) => {
-        if (event.data && event.data.payload) {
+    window.addEventListener('qsync_update', (event) => {
+        const { action, payload } = event.detail;
+        if (action === 'FIREBASE_UPDATE') {
             loadDashboardData();
         }
-    };
+    });
 });
 
 // Tab Switching

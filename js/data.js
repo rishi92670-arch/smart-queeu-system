@@ -21,8 +21,10 @@ function toggleTheme() {
     }
 }
 
-// Broadcast Channel for local cross-tab synchronization (fallback)
-const qChannel = new BroadcastChannel('qsync_events');
+// Local event dispatcher replacing BroadcastChannel
+function triggerLocalUpdate(action, payload) {
+    window.dispatchEvent(new CustomEvent('qsync_update', { detail: { action, payload } }));
+}
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -89,7 +91,7 @@ class QDatabase {
     }
 
     _notify(action, payload) {
-        qChannel.postMessage({ action, payload });
+        triggerLocalUpdate(action, payload);
     }
 
     // --- Authentication ---

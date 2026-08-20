@@ -29,14 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Listen for real-time updates via BroadcastChannel
-    qChannel.onmessage = (event) => {
-        if (event.data && (event.data.action === 'TOKEN_UPDATED' || event.data.action === 'NEW_TOKEN' || event.data.action === 'COUNTER_UPDATED')) {
-            if (currentTokenId) {
-                updateTrackingData(currentTokenId);
-            }
+    // Listen for updates
+    window.addEventListener('qsync_update', (event) => {
+        if (currentTokenId) {
+            updateTrackingData(currentTokenId);
         }
-    };
+    });
 });
 
 function handleTrack() {
