@@ -86,8 +86,10 @@ function loadDashboardData() {
 }
 
 function generateQR(config) {
-    // The URL the user should visit (token generator)
-    const url = window.location.origin + window.location.pathname.replace('dashboard.html', 'user.html');
+    // Construct URL for token generator (handles Vercel clean URLs & subdirectories)
+    const path = window.location.pathname;
+    const basePath = path.substring(0, path.lastIndexOf('/'));
+    const url = window.location.origin + basePath + '/user.html';
     
     new QRCode(document.getElementById("qrcode"), {
         text: url,

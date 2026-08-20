@@ -9,8 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('orgLogo').textContent = config.name.charAt(0);
     document.getElementById('orgLogo').style.background = config.themeColor || 'var(--color-brand-primary)';
 
-    // Generate QR Code
-    const url = window.location.origin + window.location.pathname.replace('display.html', 'user.html');
+    // Generate QR Code (handles Vercel clean URLs & subdirectories)
+    const path = window.location.pathname;
+    const basePath = path.substring(0, path.lastIndexOf('/'));
+    const url = window.location.origin + basePath + '/user.html';
     new QRCode(document.getElementById("qrcodeDisplay"), {
         text: url,
         width: 140,
