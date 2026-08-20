@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const config = db.getConfig();
         if (config) {
             document.title = `Track Queue | ${config.name}`;
-            document.getElementById('orgNameHeader').textContent = config.name;
+            document.getElementById('orgName').textContent = config.name;
         }
 
         lucide.createIcons();
@@ -77,8 +77,6 @@ function updateTrackingData(tokenId) {
     const stats = db.getQueueStats(tokenId);
 
     document.getElementById('trackToken').textContent = token.tokenNumber;
-
-    const banner = document.getElementById('trackStatusBanner');
 
     if (token.status === 'WAITING') {
         banner.textContent = 'WAITING IN QUEUE';

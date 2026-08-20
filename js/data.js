@@ -263,18 +263,18 @@ class QDatabase {
     seedData() {
         const db = {
             config: {
-                name: "ABC Hospital",
+                name: "Global Institute of Technology",
                 themeColor: "#2563eb",
             },
             services: [
-                { id: "SRV_1", name: "Registration", prefix: "R", avgServiceTime: 4, isActive: true },
-                { id: "SRV_2", name: "Consultation", prefix: "C", avgServiceTime: 10, isActive: true },
-                { id: "SRV_3", name: "Billing", prefix: "B", avgServiceTime: 5, isActive: true }
+                { id: "SRV_1", name: "Admissions", prefix: "A", avgServiceTime: 10, isActive: true },
+                { id: "SRV_2", name: "Fee Payment", prefix: "F", avgServiceTime: 5, isActive: true },
+                { id: "SRV_3", name: "Registrar / Records", prefix: "R", avgServiceTime: 7, isActive: true }
             ],
             counters: [
-                { id: "CTR_1", name: "Counter 1 (Reg)", servicesHandled: ["SRV_1"], status: "IDLE", currentServingTokenId: null },
-                { id: "CTR_2", name: "Counter 2 (Cons)", servicesHandled: ["SRV_2"], status: "IDLE", currentServingTokenId: null },
-                { id: "CTR_3", name: "Counter 3 (All)", servicesHandled: ["SRV_1", "SRV_2", "SRV_3"], status: "IDLE", currentServingTokenId: null }
+                { id: "CTR_1", name: "Counter 1 (Admissions)", servicesHandled: ["SRV_1"], status: "IDLE", currentServingTokenId: null },
+                { id: "CTR_2", name: "Counter 2 (Finance)", servicesHandled: ["SRV_2"], status: "IDLE", currentServingTokenId: null },
+                { id: "CTR_3", name: "Counter 3 (General/Registrar)", servicesHandled: ["SRV_1", "SRV_2", "SRV_3"], status: "IDLE", currentServingTokenId: null }
             ],
             users: [
                 { username: "admin", password: "password123", role: "ADMIN" }
